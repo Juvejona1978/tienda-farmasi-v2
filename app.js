@@ -373,11 +373,17 @@
 
   function openOrderDone(p) {
     lastOrder = p;
+    closeLightbox();
+    closeModal();
+    closeAuth();
+    closeAcct();
+    closeDrawer();
     $("doneTitle").textContent = "Pedido #" + p.numero + " enviado";
     $("doneText").textContent = "Ya quedó registrado. También puedes compartirlo por WhatsApp, correo u otra app.";
     $("doneBackdrop").hidden = false;
+    document.body.style.overflow = "hidden";
   }
-  function closeOrderDone() { $("doneBackdrop").hidden = true; }
+  function closeOrderDone() { $("doneBackdrop").hidden = true; document.body.style.overflow = ""; }
   $("doneClose").addEventListener("click", closeOrderDone);
   $("doneShare").addEventListener("click", () => shareOrder(lastOrder));
   $("doneBackdrop").addEventListener("click", (e) => { if (e.target === $("doneBackdrop")) closeOrderDone(); });
