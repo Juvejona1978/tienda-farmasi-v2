@@ -88,9 +88,9 @@
         : fmt(p.prices[0]);
 
       return '<article class="card">' +
-        '<div class="card-img" data-view="' + esc(p.id) + '" title="Ver pagina del catalogo">' +
-          '<img loading="lazy" src="' + esc(p.img) + '" alt="' + esc(p.name) + ' - pagina del catalogo">' +
-          '<span class="zoom-hint">Ver pagina</span>' +
+        '<div class="card-img" data-view="' + esc(p.id) + '" title="Ver producto">' +
+          '<img loading="lazy" src="' + esc(p.img) + '" alt="' + esc(p.name) + '">' +
+          '<span class="zoom-hint">Ver producto</span>' +
         "</div>" +
         '<div class="card-body">' +
           '<span class="card-section">' + esc(SECTION_LABELS[p.section] || p.section) + "</span>" +
@@ -187,8 +187,10 @@
       cart.push({
         key,
         id: modalProduct.id,
+        code: modalProduct.code || modalProduct.sku || "",
         name: modalProduct.name,
         img: modalProduct.img,
+        officialUrl: modalProduct.officialUrl || "",
         price: modalPrice,
         qty,
         note

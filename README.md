@@ -41,9 +41,18 @@ app.js          -> catalogo, carrito y compartir pedido
 styles.css      -> estilos
 config.js       -> nombre, enlace Farmasi y moneda
 products.json   -> productos del catalogo
-pages/          -> imagenes del catalogo
+assets/products/ -> imagenes WebP locales de productos
+tools/download_farmasi_products.py -> extractor reproducible desde Farmasi
 ```
 
 ## Actualizar catalogo
 
-Cuando cambie la temporada, reemplaza `products.json` y la carpeta `pages/`.
+Para regenerar datos e imagenes desde la tienda oficial de Kimberly:
+
+```bash
+python3 tools/download_farmasi_products.py
+```
+
+El script consulta APIs publicas usadas por Farmasi, guarda imagenes en
+`assets/products/` y actualiza `products.json`. No copia el diseño, HTML general
+ni scripts de Farmasi.
