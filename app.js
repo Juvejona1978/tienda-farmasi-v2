@@ -343,14 +343,17 @@
     if (navigator.share) {
       try {
         await navigator.share({ title, text });
-        return;
+        return "shared";
       } catch (e) {
-        if (e.name === "AbortError") return;
+        if (e.name === "AbortError") return "cancelled";
       }
     }
-    copyText(text)
-      .then(() => showToast("Tu equipo no abrió compartir; pedido copiado ✓"))
-      .catch(() => showToast("No se pudo compartir"));
+    try {
+      await copyText(text);
+      return "copied";
+    } catch (e) {
+      return "failed";
+    }
   }
 
   function copyText(text) {
@@ -416,8 +419,10 @@
       await db.collection("pedidos").add(pedido);
       notifyEmail(pedido);
       cart = []; saveCart(); updateCartUI(); closeDrawer();
-      openOrderDone(pedido);
-      showToast("¡Pedido #" + numero + " enviado!");
+      const shareResult = await shareOrder(pedido);
+      if (shareResult === "shared") showToast("Pedido #" + numero + " enviado y compartido");
+      else if (shareResult === "copied") showToast("Pedido #" + numero + " enviado; texto copiado");
+      else showToast("¡Pedido #" + numero + " enviado!");
     } catch (e) {
       console.error(e);
       showToast("No se pudo enviar. Revisa tu conexión e intenta de nuevo.");
