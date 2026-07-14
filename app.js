@@ -30,6 +30,7 @@
   $("storeName").textContent = CONFIG.nombreTienda;
   $("storeTagline").textContent = CONFIG.eslogan;
   $("farmasiLink").href = CONFIG.linkFarmasi;
+  $("whatsappTopLink").href = "https://wa.me/" + CONFIG.whatsappNumero;
   document.title = CONFIG.nombreTienda + " - Catalogo";
 
   fetch("products.json")
@@ -313,18 +314,12 @@
     }
 
     const text = orderText();
-    const title = "Pedido - " + CONFIG.nombreTienda;
     $("sendOrder").disabled = true;
     $("sendOrder").textContent = "Compartiendo...";
 
     try {
-      if (navigator.share) {
-        await navigator.share({ title, text });
-        showToast("Pedido compartido");
-      } else {
-        window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank", "noopener");
-        showToast("Pedido abierto en WhatsApp");
-      }
+      window.open("https://wa.me/" + CONFIG.whatsappNumero + "?text=" + encodeURIComponent(text), "_blank", "noopener");
+      showToast("Pedido abierto en WhatsApp");
     } catch (e) {
       if (!e || e.name !== "AbortError") {
         copyText(text)
