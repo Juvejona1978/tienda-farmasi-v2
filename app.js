@@ -26,7 +26,6 @@
   let user = null, profile = null;
   let authMode = "login";        // "login" | "register"
   let pendingSend = false;       // enviar pedido al terminar login
-  let lastOrder = null;
 
   const SECTION_LABELS = {
     "Makeup": "Maquillaje", "Skincare": "Skincare", "Hair Care": "Cabello",
@@ -206,7 +205,7 @@
   $("drawerBackdrop").addEventListener("click", closeDrawer);
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") { closeLightbox(); closeModal(); closeDrawer(); closeAuth(); closeAcct(); closeOrderDone(); }
+    if (e.key === "Escape") { closeLightbox(); closeModal(); closeDrawer(); closeAuth(); closeAcct(); }
   });
 
   // ---------- Autenticación ----------
@@ -374,23 +373,6 @@
     });
   }
 
-  function openOrderDone(p) {
-    lastOrder = p;
-    closeLightbox();
-    closeModal();
-    closeAuth();
-    closeAcct();
-    closeDrawer();
-    $("doneTitle").textContent = "Pedido #" + p.numero + " enviado";
-    $("doneText").textContent = "Ya quedó registrado. También puedes compartirlo por WhatsApp, correo u otra app.";
-    $("doneBackdrop").hidden = false;
-    document.body.style.overflow = "hidden";
-  }
-  function closeOrderDone() { $("doneBackdrop").hidden = true; document.body.style.overflow = ""; }
-  $("doneClose").addEventListener("click", closeOrderDone);
-  $("doneShare").addEventListener("click", () => shareOrder(lastOrder));
-  $("doneBackdrop").addEventListener("click", (e) => { if (e.target === $("doneBackdrop")) closeOrderDone(); });
-
   // ---------- Enviar pedido ----------
   async function sendOrder() {
     if (!cart.length) { showToast("Tu pedido está vacío"); return; }
@@ -416,10 +398,16 @@
       creadoMs: Date.now()
     };
     try {
+      closeLightbox();
+      closeModal();
+      closeAuth();
+      closeAcct();
+      $("sendOrder").textContent = "Compartiendo…";
+      const shareResult = await shareOrder(pedido);
+      $("sendOrder").textContent = "Guardando…";
       await db.collection("pedidos").add(pedido);
       notifyEmail(pedido);
       cart = []; saveCart(); updateCartUI(); closeDrawer();
-      const shareResult = await shareOrder(pedido);
       if (shareResult === "shared") showToast("Pedido #" + numero + " enviado y compartido");
       else if (shareResult === "copied") showToast("Pedido #" + numero + " enviado; texto copiado");
       else showToast("¡Pedido #" + numero + " enviado!");

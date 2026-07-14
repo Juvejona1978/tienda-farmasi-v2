@@ -153,7 +153,6 @@ main{max-width:1240px;margin:0 auto;padding:1.4rem clamp(1rem,4vw,2.5rem) 4rem}
   position:fixed;inset:0;z-index:70;background:rgba(30,22,32,.55);
   display:flex;align-items:center;justify-content:center;padding:1rem;
 }
-.modal-backdrop.confirm{z-index:85}
 .modal{
   background:var(--porcelana);border-radius:20px;box-shadow:var(--sombra);
   width:100%;max-width:420px;padding:1.5rem;
