@@ -25,6 +25,7 @@ body{font-family:var(--texto);background:var(--porcelana);color:var(--tinta);lin
 img{max-width:100%;display:block}
 button{font-family:inherit;cursor:pointer}
 input{font-family:inherit;font-size:1rem}
+[hidden]{display:none!important}
 :focus-visible{outline:3px solid var(--rosa);outline-offset:2px;border-radius:6px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
