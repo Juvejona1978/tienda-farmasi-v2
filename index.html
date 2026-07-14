@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belleza Farmasi · Catálogo y Pedidos</title>
+<meta name="description" content="Catálogo Farmasi con pedidos en línea. Maquillaje, skincare, nutrición y más.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">✿</span>
+    <div>
+      <h1 class="brand-name" id="storeName">Belleza Farmasi</h1>
+      <p class="brand-sub" id="storeTagline">Catálogo · Pedidos en línea</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button class="acct-btn" id="acctBtn" aria-label="Mi cuenta">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.4-3.4 4.2-5 7.5-5s6.1 1.6 7.5 5"/></svg>
+      <span id="acctLabel">Entrar</span>
+    </button>
+    <button class="cart-btn" id="cartBtn" aria-label="Ver mi pedido">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1.5 13.5a1 1 0 0 1-1 1.1H5.5a1 1 0 0 1-1-1.1L6 7z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Catálogo oficial · Precios en USD</p>
+    <h2 class="hero-title">Tu belleza,<br><em>a un pedido de distancia</em></h2>
+    <svg class="hero-underline" viewBox="0 0 220 14" aria-hidden="true"><path d="M4 10 C 60 2, 160 2, 216 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+    <p class="hero-copy">Crea tu cuenta, explora el catálogo y envía tu pedido. Te contacto para coordinar la entrega. 💌</p>
+  </div>
+</section>
+
+<nav class="filters" aria-label="Secciones del catálogo">
+  <div class="search-wrap">
+    <input type="search" id="searchInput" placeholder="Buscar producto… (ej. mascara, serum, collagen)" aria-label="Buscar producto">
+  </div>
+  <div class="chips" id="chips"></div>
+</nav>
+
+<main>
+  <p class="results-info" id="resultsInfo"></p>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer class="footer">
+  <p>Vendedora independiente de FARMASI. Los precios y presentaciones corresponden al catálogo vigente.</p>
+  <p><a id="farmasiLink" href="#" target="_blank" rel="noopener">Ver mi página oficial Farmasi ↗</a></p>
+</footer>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">✕</button>
+  <img id="lightboxImg" alt="Página del catálogo">
+</div>
+
+<!-- Modal: agregar al pedido -->
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h3 id="modalTitle">Agregar al pedido</h3>
+    <p class="modal-product" id="modalProduct"></p>
+    <div class="field" id="variantField">
+      <label>Precio / presentación</label>
+      <div class="variant-row" id="variantRow"></div>
+    </div>
+    <div class="field">
+      <label for="qtyInput">Cantidad</label>
+      <div class="qty-row">
+        <button type="button" class="qty-btn" id="qtyMinus" aria-label="Menos">−</button>
+        <input id="qtyInput" type="number" min="1" value="1" inputmode="numeric">
+        <button type="button" class="qty-btn" id="qtyPlus" aria-label="Más">+</button>
+      </div>
+    </div>
+    <div class="field">
+      <label for="noteInput">Tono, aroma o código <span class="opt">(opcional — míralo en la página del catálogo)</span></label>
+      <input id="noteInput" type="text" placeholder="Ej. 04 Plush Blush · 1001390">
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="modalCancel">Cancelar</button>
+      <button class="btn solid" id="modalAdd">Agregar ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: cuenta (entrar / crear cuenta) -->
+<div class="modal-backdrop" id="authBackdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true">
+    <h3 id="authTitle">Entrar</h3>
+    <p class="modal-sub" id="authSub">Con tu cuenta puedes hacer pedidos y ver su estado.</p>
+    <div class="field" id="fNombre" hidden><label for="regNombre">Nombre completo *</label><input id="regNombre" type="text" autocomplete="name"></div>
+    <div class="field" id="fTel" hidden><label for="regTel">Teléfono *</label><input id="regTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="Ej. 8888-8888"></div>
+    <div class="field" id="fDir" hidden><label for="regDir">Dirección o punto de entrega</label><input id="regDir" type="text" placeholder="Opcional"></div>
+    <div class="field"><label for="authEmail">Correo *</label><input id="authEmail" type="email" autocomplete="email"></div>
+    <div class="field"><label for="authPass">Contraseña *</label><input id="authPass" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres"></div>
+    <p class="auth-error" id="authError" hidden></p>
+    <div class="modal-actions">
+      <button class="btn ghost" id="authCancel">Cancelar</button>
+      <button class="btn solid" id="authSubmit">Entrar</button>
+    </div>
+    <button class="auth-switch" id="authSwitch">¿No tienes cuenta? <strong>Crear cuenta</strong></button>
+  </div>
+</div>
+
+<!-- Modal: mi cuenta / mis pedidos -->
+<div class="modal-backdrop" id="acctBackdrop" hidden>
+  <div class="modal modal-tall" role="dialog" aria-modal="true">
+    <h3>Hola, <span id="acctName"></span> 💗</h3>
+    <p class="modal-sub" id="acctEmail"></p>
+    <h4 class="mini-title">Mis pedidos</h4>
+    <div class="my-orders" id="myOrders"><p class="muted">Cargando…</p></div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="logoutBtn">Cerrar sesión</button>
+      <button class="btn solid" id="acctClose">Listo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: pedido enviado -->
+<div class="modal-backdrop" id="doneBackdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="doneTitle">
+    <h3 id="doneTitle">Pedido enviado</h3>
+    <p class="modal-sub" id="doneText">Ya quedó registrado.</p>
+    <div class="modal-actions">
+      <button class="btn ghost" id="doneClose">Listo</button>
+      <button class="btn solid" id="doneShare">Compartir pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- Drawer: carrito / pedido -->
+<div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+<aside class="drawer" id="drawer" aria-label="Mi pedido" hidden>
+  <div class="drawer-head">
+    <h3>Mi pedido</h3>
+    <button class="drawer-close" id="drawerClose" aria-label="Cerrar">✕</button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-empty" id="drawerEmpty">
+    <p>Tu pedido está vacío.</p>
+    <p class="drawer-empty-sub">Explora el catálogo y toca «Agregar» en lo que te guste.</p>
+  </div>
+  <div class="drawer-foot" id="drawerFoot">
+    <div class="total-row"><span>Total estimado</span><strong id="totalAmount">$0.00</strong></div>
+    <div class="field"><label for="clientAddr">Dirección o punto de entrega</label><input id="clientAddr" type="text" placeholder="Opcional"></div>
+    <button class="btn solid wide" id="sendOrder">Enviar pedido ✨</button>
+    <p class="foot-note" id="footNote">Tu pedido queda registrado y la vendedora te contactará.</p>
+  </div>
+</aside>
+
+<div class="toast" id="toast" hidden></div>
+
+<!-- Firebase (compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

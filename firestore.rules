@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ⚠️ IMPORTANTE: pon aquí los MISMOS correos de config.js -> adminEmails
+    function esAdmin() {
+      return request.auth != null
+        && request.auth.token.email in [
+          "CORREO-DE-ELLA@gmail.com"
+          // ,"OTRA-VENDEDORA@gmail.com"
+        ];
+    }
+
+    // Perfiles de clientes: cada quien el suyo; la admin puede leerlos todos
+    match /usuarios/{uid} {
+      allow create, update: if request.auth != null && request.auth.uid == uid;
+      allow read: if (request.auth != null && request.auth.uid == uid) || esAdmin();
+    }
+
+    // Pedidos: el cliente crea y lee los suyos; la admin lee y actualiza todos
+    match /pedidos/{id} {
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid;
+      allow read: if (request.auth != null && resource.data.uid == request.auth.uid) || esAdmin();
+      allow update, delete: if esAdmin();
+    }
+  }
+}
